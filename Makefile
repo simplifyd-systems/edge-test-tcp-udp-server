@@ -8,13 +8,13 @@ build_docker_image:
 	docker build -t edge-test-tcp-udp-server .
 
 push_docker_image:
-	docker tag edge-test-tcp-udp-server image-hub.simplifyd.dev/edge/edge-test-tcp-udp-server
-	docker push image-hub.simplifyd.dev/edge/edge-test-tcp-udp-server
+	docker tag edge-test-tcp-udp-server image-hub.simplifyd.dev/library/edge-test-tcp-udp-server
+	docker push image-hub.simplifyd.dev/library/edge-test-tcp-udp-server
 
 build_and_push_docker_image:
 	docker build -t edge-test-tcp-udp-server .
-	docker tag edge-test-tcp-udp-server image-hub.simplifyd.dev/edge/edge-test-tcp-udp-server
-	docker push image-hub.simplifyd.dev/edge/edge-test-tcp-udp-server
+	docker tag edge-test-tcp-udp-server image-hub.simplifyd.dev/library/edge-test-tcp-udp-server
+	docker push image-hub.simplifyd.dev/library/edge-test-tcp-udp-server
 
 linux:
 	GOOS=linux go build

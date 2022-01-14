@@ -40,30 +40,39 @@ func tcpServer() {
 	}
 	defer l.Close()
 
-	c, err := l.Accept()
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
 	for {
-		netData, err := bufio.NewReader(c).ReadString('\n')
+		c, err := l.Accept()
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
-		if strings.TrimSpace(string(netData)) == "STOP" {
-			fmt.Println("Exiting TCP server!")
-			return
+		log.Println("New connection", c.RemoteAddr())
+		if err != nil {
+			log.Println("error accepting connection", err)
+			continue
 		}
 
-		fmt.Print("-> ", string(netData))
-		t := time.Now()
-		myTime := t.Format(time.RFC3339)
+		go func(conn net.Conn) {
+			for {
+				netData, err := bufio.NewReader(conn).ReadString('\n')
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+				if strings.TrimSpace(string(netData)) == "STOP" {
+					fmt.Println("Exiting TCP server!")
+					return
+				}
 
-		netData = strings.TrimSuffix(netData, "\n")
-		// c.Write([]byte(myTime))
-		c.Write([]byte(fmt.Sprintf("--> '%s' - received at time: %s - from IP address %s", netData, myTime, c.RemoteAddr())))
+				fmt.Print("-> ", string(netData))
+				t := time.Now()
+				myTime := t.Format(time.RFC3339)
+
+				netData = strings.TrimSuffix(netData, "\n")
+				// c.Write([]byte(myTime))
+				c.Write([]byte(fmt.Sprintf("--> '%s' - received at time: %s - from IP address %s\n\n", netData, myTime, c.RemoteAddr())))
+			}
+		}(c)
 	}
 }
 
