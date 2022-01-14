@@ -2,10 +2,11 @@ package main
 
 import (
 	"bufio"
+	"edge-test-tcp-udp-server/env"
 	"fmt"
+	"log"
 	"math/rand"
 	"net"
-	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -13,6 +14,8 @@ import (
 
 func main() {
 	ch := make(chan struct{})
+	env.Setup()
+
 	go tcpServer()
 	go udpServer()
 
@@ -20,16 +23,19 @@ func main() {
 }
 
 func tcpServer() {
-	arguments := os.Args
-	if len(arguments) == 1 {
-		fmt.Println("Please provide port number")
-		return
-	}
+	/*
+		arguments := os.Args
+		if len(arguments) == 1 {
+			fmt.Println("Please provide port number")
+			return
+		}
+		PORT := ":" + arguments[1]
+	*/
 
-	PORT := ":" + arguments[1]
+	PORT := ":" + env.Var.Port
 	l, err := net.Listen("tcp", PORT)
 	if err != nil {
-		fmt.Println(err)
+		log.Fatalln(err)
 		return
 	}
 	defer l.Close()
@@ -66,22 +72,25 @@ func random(min, max int) int {
 }
 
 func udpServer() {
-	arguments := os.Args
-	if len(arguments) == 1 {
-		fmt.Println("Please provide a port number!")
-		return
-	}
-	PORT := ":" + arguments[1]
+	/*
+		arguments := os.Args
+		if len(arguments) == 1 {
+			fmt.Println("Please provide a port number!")
+			return
+		}
+		PORT := ":" + arguments[1]
+	*/
+	PORT := ":" + env.Var.Port
 
 	s, err := net.ResolveUDPAddr("udp4", PORT)
 	if err != nil {
-		fmt.Println(err)
+		log.Fatalln(err)
 		return
 	}
 
 	connection, err := net.ListenUDP("udp4", s)
 	if err != nil {
-		fmt.Println(err)
+		log.Fatalln(err)
 		return
 	}
 
