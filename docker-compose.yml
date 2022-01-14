@@ -1,0 +1,9 @@
+services:
+  edge-test-tcp-udp-server:
+    image: image-hub.simplifyd.dev/library/edge-test-tcp-udp-server
+    container_name: edge-test-tcp-udp-server
+    ports:
+      - "56789:9999/tcp"
+    restart: unless-stopped
+    environment:
+      - PORT=9999
